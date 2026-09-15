@@ -1,8 +1,18 @@
 import { supabase } from './supabase'
 import type { Addon, Category, Order, Product } from './types'
 
-export async function isCurrentUserAdmin() {
-  const { data, error } = await supabase.from('admin_users').select('user_id').maybeSingle()
+export async function getAdminMembership(userId: string) {
+  const { data, error } = await supabase
+    .from('admin_users')
+    .select('user_id')
+    .eq('user_id', userId)
+    .maybeSingle()
+
+  return { data, error }
+}
+
+export async function isCurrentUserAdmin(userId: string) {
+  const { data, error } = await getAdminMembership(userId)
   if (error) throw error
   return Boolean(data)
 }
