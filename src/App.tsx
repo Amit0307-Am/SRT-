@@ -10,6 +10,7 @@ type PaymentMethod = 'UPI' | 'COD'
 
 const formatPrice = (value: number) => `₹${value}`
 const toAbsoluteImageUrl = (imagePath?: string) => imagePath ? (imagePath.startsWith('http') ? imagePath : new URL(imagePath, window.location.origin).href) : 'Food image to be added'
+const getPaymentAmount = (orderTotal: number) => siteConfig.payment.testMode ? siteConfig.payment.testAmount : orderTotal
 
 const buildUpiUri = (amount: number, orderId: string) => {
   const params = new URLSearchParams({
@@ -29,7 +30,7 @@ const buildOrderLink = (item: MenuItem, options: { size: SizeKey; quantity: numb
   if (item.sizes?.[size] != null) unitTotal = item.sizes[size] ?? 0
   for (const addon of item.addOns ?? []) if (addOns.includes(addon.name)) unitTotal += addon.prices?.[size] ?? 0
   const actualOrderTotal = unitTotal * quantity
-  const paymentAmount = paymentMethod === 'UPI' && siteConfig.payment.testMode ? siteConfig.payment.testAmount : actualOrderTotal
+  const paymentAmount = paymentMethod === 'UPI' ? getPaymentAmount(actualOrderTotal) : actualOrderTotal
   const message = [
     'Hi Cafe SRT 👋', '', `Order #${orderId}`, '',
     `${item.category === 'Pizza' || item.sizes ? '🍕' : '🍔'} Item: ${item.name}`,
@@ -78,8 +79,8 @@ function EmptyImage({ label = 'Food illustration' }: { label?: string }) { retur
 function CafePlaceholder({ label }: { label: string }) { return <div className="cafe-placeholder" aria-label={label}><span className="cafe-mark">SRT</span><small>Eat · Sip · Relax</small><i className="steam steam-one" /><i className="steam steam-two" /></div> }
 
 function PaymentCheckout({ item, size, quantity, addOns, total, hasKnownTotal, paymentMethod, setPaymentMethod, utr, setUtr, paymentSubmitted, setPaymentSubmitted, orderId }: { item: MenuItem; size: SizeKey; quantity: number; addOns: string[]; total: number; hasKnownTotal: boolean; paymentMethod: PaymentMethod | null; setPaymentMethod: Dispatch<SetStateAction<PaymentMethod | null>>; utr: string; setUtr: Dispatch<SetStateAction<string>>; paymentSubmitted: boolean; setPaymentSubmitted: Dispatch<SetStateAction<boolean>>; orderId: string }) {
-  const payableAmount = siteConfig.payment.testMode ? siteConfig.payment.testAmount : total
-  const upiUri = hasKnownTotal ? buildUpiUri(payableAmount, orderId) : ''
+  const paymentAmount = getPaymentAmount(total)
+  const upiUri = hasKnownTotal ? buildUpiUri(paymentAmount, orderId) : ''
   const placeOrder = () => { if (!paymentMethod) return; window.open(buildOrderLink(item, { size, quantity, addOns, paymentMethod, utr, orderId }), '_blank', 'noopener,noreferrer') }
   const submitUpiOrder = () => { setPaymentSubmitted(true); window.open(buildOrderLink(item, { size, quantity, addOns, paymentMethod: 'UPI', utr, orderId }), '_blank', 'noopener,noreferrer') }
   return <>
@@ -87,7 +88,7 @@ function PaymentCheckout({ item, size, quantity, addOns, total, hasKnownTotal, p
       <label className={`payment-option ${paymentMethod === 'UPI' ? 'active' : ''}`}><input type="radio" name="payment-method" checked={paymentMethod === 'UPI'} disabled={!hasKnownTotal} onChange={() => { setPaymentMethod('UPI'); setPaymentSubmitted(false) }} /><span><strong>UPI</strong><small>Pay digitally, then we verify manually</small></span></label>
       <label className={`payment-option ${paymentMethod === 'COD' ? 'active' : ''}`}><input type="radio" name="payment-method" checked={paymentMethod === 'COD'} onChange={() => { setPaymentMethod('COD'); setPaymentSubmitted(false) }} /><span><strong>Cash on Delivery</strong><small>Pay when your order arrives</small></span></label>
     </fieldset>
-    {paymentMethod === 'UPI' && hasKnownTotal && <div className="upi-payment"><p className="actual-total-label">Actual Order Total: <strong>{formatPrice(total)}</strong></p>{siteConfig.payment.testMode && <p className="test-payment-label">TEST PAYMENT<br /><strong>{formatPrice(payableAmount)}</strong><small>Demo payment amount</small></p>}<div className="upi-qr"><QRCodeSVG value={upiUri} size={240} bgColor="#ffffff" fgColor="#211a17" level="M" /></div><p className="upi-help">Scan with any supported UPI app. Please verify the amount before payment.</p><p className="upi-payee">Pay to <strong>{siteConfig.payment.payeeName}</strong><br /><small>UPI: {siteConfig.payment.upiId}</small></p><a className="secondary-btn upi-app-button" href={upiUri}>Pay {formatPrice(payableAmount)} with UPI App</a><label className="utr-field">UPI Transaction ID / UTR <span>(optional)</span><input value={utr} onChange={(event) => setUtr(event.target.value)} placeholder="Enter UTR / transaction ID" /></label><button type="button" className={`paid-button ${paymentSubmitted ? 'submitted' : ''}`} onClick={submitUpiOrder}>{paymentSubmitted ? 'Awaiting Manual Verification' : 'I Have Paid – Continue to WhatsApp'}</button>{paymentSubmitted && <p className="pending-note">Payment status: Awaiting Manual Verification. Cafe SRT will verify it manually.</p>}</div>}
+    {paymentMethod === 'UPI' && hasKnownTotal && <div className="upi-payment"><p className="actual-total-label">Actual Order Total: <strong>{formatPrice(total)}</strong></p>{siteConfig.payment.testMode && <p className="test-payment-label">TEST PAYMENT<br /><strong>{formatPrice(paymentAmount)}</strong><small>Demo payment amount</small></p>}<div className="upi-qr"><QRCodeSVG value={upiUri} size={240} bgColor="#ffffff" fgColor="#211a17" level="M" /></div><p className="upi-help">Scan with any supported UPI app. Please verify the amount before payment.</p><p className="upi-payee">Pay to <strong>{siteConfig.payment.payeeName}</strong><br /><small>UPI: {siteConfig.payment.upiId}</small></p><a className="secondary-btn upi-app-button" href={upiUri}>Pay {formatPrice(paymentAmount)} with UPI App</a><label className="utr-field">UPI Transaction ID / UTR <span>(optional)</span><input value={utr} onChange={(event) => setUtr(event.target.value)} placeholder="Enter UTR / transaction ID" /></label><button type="button" className={`paid-button ${paymentSubmitted ? 'submitted' : ''}`} onClick={submitUpiOrder}>{paymentSubmitted ? 'Awaiting Manual Verification' : 'I Have Paid – Continue to WhatsApp'}</button>{paymentSubmitted && <p className="pending-note">Payment status: Awaiting Manual Verification. Cafe SRT will verify it manually.</p>}</div>}
     {paymentMethod === 'COD' && <div className="cod-summary"><span>Payment Method: <strong>Cash on Delivery</strong></span><span>Actual Amount Payable: <strong>{hasKnownTotal ? formatPrice(total) : 'Confirm on WhatsApp'}</strong></span></div>}
     {paymentMethod === 'COD' && <button type="button" className="primary-btn modal-confirm" disabled={!paymentMethod} onClick={placeOrder}>Place Order on WhatsApp</button>}
   </>
