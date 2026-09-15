@@ -1,0 +1,1 @@
+.mobile-action-bar{position:fixed;left:0;right:0;bottom:0;display:none;height:60px;background:var(--coffee-dark);border-top:1px solid rgba(255,248,237,.12);z-index:40}.mobile-action-bar a{flex:1;display:flex;align-items:center;justify-content:center;color:var(--cream);text-decoration:none;font-size:.75rem;font-weight:800}@media(max-width:860px){.mobile-action-bar{display:flex}}
