@@ -5,8 +5,10 @@ export const siteConfig = {
   phoneHref: 'tel:+917414926847',
   whatsapp: '7414926847',
   whatsappLink: 'https://wa.me/917414926847',
-  upi: {
-    id: 'shakti.tad@ybl',
+  payment: {
+    testMode: true,
+    testAmount: 1,
+    upiId: 'shakti.tad@ybl',
     payeeName: 'Cafe srt',
     transactionPrefix: 'SRT',
   },
