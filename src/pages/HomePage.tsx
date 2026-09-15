@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import '../customer.css'
 import logo from '../assets/logo-image.webp'
 import { siteConfig } from '../config/site'
 
