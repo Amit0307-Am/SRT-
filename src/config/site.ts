@@ -5,6 +5,11 @@ export const siteConfig = {
   phoneHref: 'tel:+917414926847',
   whatsapp: '7414926847',
   whatsappLink: 'https://wa.me/917414926847',
+  upi: {
+    id: 'shakti.tad@ybl',
+    payeeName: 'Cafe srt',
+    transactionPrefix: 'SRT',
+  },
   address: 'Shivaji Nagar, Mangalvedha, Maharashtra 413305, India',
   city: 'Mangalvedha',
   state: 'Maharashtra',
