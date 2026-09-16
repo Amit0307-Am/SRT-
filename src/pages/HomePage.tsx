@@ -3,13 +3,14 @@ import logo from '../assets/logo-image.webp'
 import { siteConfig } from '../config/site'
 
 function Navbar({ menuOpen, onMenuToggle }: { menuOpen: boolean; onMenuToggle: () => void }) {
+  const showOrderButton = false
   return <header className="topbar">
     <a className="brand" href="/" aria-label="Cafe SRT home"><img src={logo} alt="Cafe SRT logo" /><span>Cafe SRT</span></a>
     <button type="button" className="menu-toggle" onClick={onMenuToggle} aria-label="Toggle navigation menu" aria-expanded={menuOpen}>{menuOpen ? '×' : '☰'}</button>
     <nav className={`main-nav ${menuOpen ? 'open' : ''}`} aria-label="Main navigation">
       <a href="#home">Home</a><a href="#about">About</a><a href="#gallery">Gallery</a><a href="#location">Location</a><a href="#contact">Contact</a>
     </nav>
-    <a className="nav-cta" href="/order">🍔 Order Food</a>
+    {showOrderButton && <a className="nav-cta" href="/order">🍔 Order Food</a>}
   </header>
 }
 
@@ -23,7 +24,7 @@ export default function HomePage() {
   return <>
     <div className="announcement-bar">♥ Couple Friendly • Cozy Cafe • Mangalvedha</div>
     <main className="page-shell"><Navbar menuOpen={menuOpen} onMenuToggle={() => setMenuOpen((open) => !open)} />
-      <section className="hero home-hero" id="home"><div className="hero-copy"><p className="eyebrow">CAFE SRT • MANGALVEDHA</p><div className="premium-badge">♥ Couple Friendly</div><h1>Good Food.<br />Great Vibes.<br /><em>Better Together.</em></h1><p className="hero-subtitle">Your cozy spot in Mangalvedha for coffee dates, casual hangouts and delicious bites.</p><div className="cta-row"><a href="/order" className="primary-btn">Order Food <span>↗</span></a><a href="#location" className="tertiary-btn">Find Us</a></div><div className="hero-meta"><span>♥ Couple Friendly</span><span>☕ Cozy Vibes</span><span>✦ Fresh Bites</span></div></div><div className="hero-visual"><CafePlaceholder /><div className="hero-sticker">MANGALVEDHA<br /><b>since your<br />next coffee date</b></div><div className="small-card"><div className="small-card-badge">Good conversations live here</div><p>A comfortable place for coffee dates, relaxed conversations and casual hangouts.</p></div></div></section>
+      <section className="hero home-hero" id="home"><div className="hero-copy"><p className="eyebrow">CAFE SRT • MANGALVEDHA</p><div className="premium-badge">♥ Couple Friendly</div><h1>Good Food.<br />Great Vibes.<br /><em>Better Together.</em></h1><p className="hero-subtitle">Your cozy spot in Mangalvedha for coffee dates, casual hangouts and delicious bites.</p><div className="cta-row"><a href="/order" className="primary-btn">Order Food <span>↗</span></a><a href="#location" className="tertiary-btn">Find Us</a></div><div className="hero-meta"><span>♥ Couple Friendly</span><span>☕ Cozy Vibes</span><span>✦ Fresh Bites</span></div></div><div className="hero-visual"><CafePlaceholder /><div className="hero-sticker"><span>SIP</span><span>EAT</span><span>RELAX</span></div><div className="small-card"><div className="small-card-badge">Good conversations live here</div><p>A comfortable place for coffee dates, relaxed conversations and casual hangouts.</p></div></div></section>
       <section className="experience-strip" aria-label="Cafe experience"><span>♥ <b>Couple Friendly</b></span><span>☕ <b>Cozy Atmosphere</b></span><span>✦ <b>Delicious Bites</b></span><span>⌖ <b>Mangalvedha</b></span></section>
       <section className="about-section split-section" id="about"><div><p className="eyebrow eyebrow-inline">About Cafe SRT</p><h2>A relaxed corner in Mangalvedha.</h2></div><div><p>Cafe SRT brings fast food, beverages and an easygoing cafe environment together in Shivaji Nagar, Mangalvedha.</p><p>Come by for a casual hangout, a coffee date or a quick bite. Delivery is available across Mangalvedha.</p><a className="text-link" href="#location">Find the cafe →</a></div></section>
       <section className="vibe-section"><div className="section-heading"><p className="eyebrow eyebrow-inline">Good Vibes</p><h2>Made for good conversations.</h2><p className="section-lede">Whether it is a coffee date, catching up with friends or a relaxed evening, Cafe SRT gives you a comfortable place to sit, talk and enjoy your favourites.</p></div><div className="vibe-grid"><article><span>♥</span><h3>Couple Friendly</h3><p>A comfortable setting for coffee dates and shared plates.</p></article><article><span>☕</span><h3>Coffee Dates</h3><p>Slow down with a warm drink and a little time together.</p></article><article><span>♧</span><h3>Friends &amp; Hangouts</h3><p>Meet, talk and keep the plans pleasantly casual.</p></article><article><span>✦</span><h3>Snacks &amp; Meals</h3><p>Fast food favourites and beverages for every craving.</p></article></div></section>
